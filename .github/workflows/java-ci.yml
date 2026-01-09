@@ -1,0 +1,36 @@
+# Name of the workflow
+name: Java Matrix CI Pipeline
+
+# Trigger workflow on push
+on: [push]
+
+jobs:
+  build:
+    # OS comes from matrix
+    runs-on: ${{ matrix.os }}
+
+    # Matrix strategy for multiple OS and JDK versions
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java-version: [17, 21, 24]
+
+    steps:
+    # Step 1: Checkout repository code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Setup Java based on matrix version
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java-version }}
+
+    # Step 3: Compile Java program
+    - name: Compile Java
+      run: javac src/App.java
+
+    # Step 4: Run Java program
+    - name: Run Java App
+      run: java -cp src App
